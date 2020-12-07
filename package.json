@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Irena-Pod/tinyapp-/issues"
   },
-  "homepage": "https://github.com/Irena-Pod/tinyapp-#readme"
+  "homepage": "https://github.com/Irena-Pod/tinyapp-#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
