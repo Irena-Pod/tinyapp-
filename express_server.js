@@ -48,9 +48,15 @@ app.get("/hello", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString()
-  res.redirect(`/urls/:${shortURL}`);
+  res.redirect(`/urls/${shortURL}`);
   urlDatabase[shortURL] = req.body.longURL
   console.log(urlDatabase)
+});
+
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL]
+  res.redirect(longURL);
 });
 
 
