@@ -1,5 +1,7 @@
 const express = require("express");
+const cookieParser = require('cookie-parser');
 const app = express();
+app.use(cookieParser());
 const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
@@ -7,6 +9,7 @@ app.set("view engine", "ejs");
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
 
 function generateRandomString() {
   return Math.random().toString(36).substring(2, 8)
@@ -38,9 +41,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
-console.log(req.params)
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
