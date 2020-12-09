@@ -76,8 +76,6 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  // const user = users["1"]
-  // console.log(user)
   const templateVars = users[req.cookies["user_id"]]
   res.render("urls_new", templateVars);
 });
@@ -128,6 +126,10 @@ app.post("/register", (req, res) => {
   res.cookie("user_id", randomID)
   res.redirect("/urls")
 });
+
+app.get("/login", (req, res) => {
+  res.render("login")
+})
 
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.longURL
