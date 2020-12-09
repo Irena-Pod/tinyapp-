@@ -56,7 +56,6 @@ app.post("/urls", (req, res) => {
   //console.log(urlDatabase)
 });
 
-
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL]
   res.redirect(longURL);
@@ -71,6 +70,11 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL]
   res.redirect("/urls")
 })
+
+app.post("/login", (req, res) => {
+  res.cookie("Username", req.body.Username);
+  res.redirect("/urls")
+}) 
 
 
 
