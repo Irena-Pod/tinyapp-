@@ -104,12 +104,16 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const randomID = generateRandomString();
-  users[randomID] = {
-    id: randomID,
-    email: req.body.email,
-    password: req.body.password
+  if (req.body.email === "" || req.body.password === "") {
+    return res.status(400).send(`${res.statusCode}: Both email and password must be entered.`);
+  } else {
+    users[randomID] = {
+      id: randomID,
+      email: req.body.email,
+      password: req.body.password
+    }
   }
-  console.log(users[randomID])
+
   res.cookie("user_id", randomID)
   res.redirect("/urls")
 })
@@ -123,8 +127,3 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL]
   res.redirect("/urls")
 })
-
-
-
-
-
