@@ -10,7 +10,6 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-
 function generateRandomString() {
   return Math.random().toString(36).substring(2, 8)
 }
@@ -37,6 +36,15 @@ const users = {
     password: "coffee-table-book"
   }
 };
+//check if email already exists
+function emailExists(email) {
+  for (let id in users) {
+    if (users[id].email === email) {
+      return true;
+    }
+  }
+  return false;
+}
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -52,12 +60,12 @@ app.get("/urls.json", (req, res) => {
 app.post("/login", (req, res) => {
   res.cookie("Username", req.body.Username);
   res.redirect("/urls")
-})
+});
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
   res.redirect("/urls")
-})
+});
 
 app.get("/urls", (req, res) => {
   const templateVars = {
@@ -100,30 +108,33 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/register", (req, res) => {
   res.render("register")
-})
+});
 
 app.post("/register", (req, res) => {
   const randomID = generateRandomString();
   if (req.body.email === "" || req.body.password === "") {
     return res.status(400).send(`${res.statusCode}: Both email and password must be entered.`);
-  } else {
-    users[randomID] = {
-      id: randomID,
-      email: req.body.email,
-      password: req.body.password
-    }
   }
 
+  if (emailExists(req.body.email)) {
+    return res.status(400).send(`${res.statusCode}: Email already exists.`);
+  }
+  // create user
+  users[randomID] = {
+    id: randomID,
+    email: req.body.email,
+    password: req.body.password
+  };
   res.cookie("user_id", randomID)
   res.redirect("/urls")
-})
+});
 
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.longURL
   res.redirect("/urls")
-})
+});
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL]
   res.redirect("/urls")
-})
+});
