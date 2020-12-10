@@ -193,12 +193,26 @@ app.get("/login", (req, res) => {
   res.render("login", templateVars)
 })
 
+// Edit an exisiting URL that belong to logged-in user
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id] = req.body.longURL
-  res.redirect("/urls")
+  // Get URLs belonging to logged-in user
+  const userURLs = urlsForUser(req.cookies["user_id"]);
+  if (userURLs[req.params.id]) {
+    urlDatabase[req.params.id] = { longURL: req.body.longURL, id: req.cookies["user_id"] };
+    res.redirect("/urls")
+  } else {
+    res.send("This URL can only be edited by the owner");
+  }
 });
 
+// Delete an existing URL that belongs to logged-in user
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL]
-  res.redirect("/urls")
+  // Get URLs belonging to logged-in user
+  const userURLs = urlsForUser(req.cookies["user_id"]);
+  if (userURLs[req.params.shortURL]) {
+    delete urlDatabase[req.params.shortURL]
+    res.redirect("/urls")
+  } else {
+    res.send("This URL can only be deleted by the owner");
+  }
 });
