@@ -2,6 +2,8 @@ const express = require("express");
 const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cookieParser());
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const PORT = 8080; // default port 8080
 
 app.set("view engine", "ejs");
@@ -180,7 +182,7 @@ app.post("/register", (req, res) => {
   users[randomID] = {
     id: randomID,
     email: req.body.email,
-    password: req.body.password
+    password: bcrypt.hashSync(req.body.password, saltRounds)
   };
   res.cookie("user_id", randomID)
   res.redirect("/urls")
