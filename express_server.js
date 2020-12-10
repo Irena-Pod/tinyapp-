@@ -54,14 +54,15 @@ const users = {
     password: bcrypt.hashSync("coffee-table-book", saltRounds)
   }
 };
-//check if email already exists
-function emailExists(email) {
-  for (let id in users) {
-    if (users[id].email === email) {
-      return true;
+
+//lookup user by email 
+const getUserbyEmail = function (email, users) {
+  for (let user in users) {
+    if (users[user].email === email) {
+      return users[user];
     }
   }
-  return false;
+  return null;
 }
 
 const bodyParser = require("body-parser");
@@ -75,20 +76,19 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+// Login page: 
 app.post("/login", (req, res) => {
-  const hash = bcrypt.hashSync(req.body.password, saltRounds);
+  const user = getUserbyEmail((req.body.email), users);
 
-  if (!emailExists(req.body.email)) {
+  if (user === null) {
     return res.status(403).send(`${res.statusCode}: Email cannot be found.`);
   }
 
-  for (let id in users) {
-    //check that user email exists in database and compare hashed passwords
-    if (req.body.email === users[id].email && bcrypt.compareSync(req.body.password, hash)) {
-     req.session["user_id"] = users[id].id
-      res.redirect("/urls");
-      return;
-    }
+// compare passwords
+  if (bcrypt.compareSync(req.body.password, user.password)) {
+    req.session["user_id"] = user.id
+    res.redirect("/urls");
+    return;
   }
   return res.status(403).send(`${res.statusCode}: Incorrect password, try again!`);
 });
@@ -181,7 +181,7 @@ app.post("/register", (req, res) => {
     return res.status(400).send(`${res.statusCode}: Both email and password must be entered.`);
   }
 
-  if (emailExists(req.body.email)) {
+  if (getUserbyEmail((req.body.email), users) !== null) {
     return res.status(400).send(`${res.statusCode}: Email already exists.`);
   }
   // create user
