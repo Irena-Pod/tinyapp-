@@ -57,17 +57,11 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-
-
-
-
-
 app.post("/login", (req, res) => {
 
   if (!emailExists(req.body.email)) {
     return res.status(403).send(`${res.statusCode}: Email cannot be found.`);
   }
-
  
   for (let id in users) {
     if (req.body.email === users[id].email && users[id].password === req.body.password) {
@@ -78,12 +72,6 @@ app.post("/login", (req, res) => {
   }
   return res.status(403).send(`${res.statusCode}: Incorrect password, try again!`);
 });
-
-
-
-
-
-
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
@@ -99,7 +87,9 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = users[req.cookies["user_id"]]
+  const templateVars = {
+    user: users[req.cookies["user_id"]]
+  }
   res.render("urls_new", templateVars);
 });
 
@@ -128,7 +118,10 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register")
+  const templateVars = {
+    user: null
+  }
+  res.render("register", templateVars)
 });
 
 app.post("/register", (req, res) => {
@@ -151,7 +144,10 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login")
+  const templateVars = {
+    user: null
+  }
+  res.render("login", templateVars)
 })
 
 app.post("/urls/:id", (req, res) => {
