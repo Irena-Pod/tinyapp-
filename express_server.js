@@ -62,7 +62,7 @@ app.post("/login", (req, res) => {
   if (!emailExists(req.body.email)) {
     return res.status(403).send(`${res.statusCode}: Email cannot be found.`);
   }
- 
+
   for (let id in users) {
     if (req.body.email === users[id].email && users[id].password === req.body.password) {
       res.cookie("user_id", users[id].id)
@@ -87,6 +87,12 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login")
+    return;
+  }
+
   const templateVars = {
     user: users[req.cookies["user_id"]]
   }
