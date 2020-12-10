@@ -1,10 +1,14 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session')
 const app = express();
-app.use(cookieParser());
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const PORT = 8080; // default port 8080
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
 
 app.set("view engine", "ejs");
 
@@ -81,7 +85,7 @@ app.post("/login", (req, res) => {
   for (let id in users) {
     //check that user email exists in database and compare hashed passwords
     if (req.body.email === users[id].email && bcrypt.compareSync(req.body.password, hash)) {
-      res.cookie("user_id", users[id].id)
+     req.session["user_id"] = users[id].id
       res.redirect("/urls");
       return;
     }
@@ -90,22 +94,22 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  req.session = null;
   res.redirect("/urls")
 });
 
 //show URLs for logged-in users only
 app.get("/urls", (req, res) => {
   let templateVars = {}
-  if (!req.cookies["user_id"]) {
+  if (!req.session["user_id"]) {
     templateVars = {
       user: null,
       urls: null
     }
   } else {
     templateVars = {
-      urls: urlsForUser(req.cookies["user_id"]),
-      user: users[req.cookies["user_id"]]
+      urls: urlsForUser(req.session["user_id"]),
+      user: users[req.session["user_id"]]
     }
   }
   res.render("urls_index", templateVars);
@@ -113,35 +117,35 @@ app.get("/urls", (req, res) => {
 
 //
 app.get("/urls/new", (req, res) => {
-  if (!req.cookies["user_id"]) {
+  if (!req.session["user_id"]) {
     res.redirect("/login")
     return;
   }
 
   const templateVars = {
-    user: users[req.cookies["user_id"]]
+    user: users[req.session["user_id"]]
   }
   res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {}
-  if (!req.cookies["user_id"]) {
+  if (!req.session["user_id"]) {
     templateVars = {
       user: null,
       shortURL: null
     }
   } else {
-    const userURLs = urlsForUser(req.cookies["user_id"]);
+    const userURLs = urlsForUser(req.session["user_id"]);
     if (userURLs[req.params.shortURL]) {
       templateVars = {
         shortURL: req.params.shortURL,
         longURL: urlDatabase[req.params.shortURL],
-        user: users[req.cookies["user_id"]]
+        user: users[req.session["user_id"]]
       };
     } else {
       templateVars = {
-        user: users[req.cookies["user_id"]],
+        user: users[req.session["user_id"]],
         shortURL: null
       }
     }
@@ -156,7 +160,7 @@ app.get("/hello", (req, res) => {
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString()
   res.redirect(`/urls/${shortURL}`);
-  urlDatabase[shortURL] = { longURL: req.body.longURL, id: req.cookies["user_id"] }
+  urlDatabase[shortURL] = { longURL: req.body.longURL, id: req.session["user_id"] }
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -186,7 +190,7 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, saltRounds)
   };
-  res.cookie("user_id", randomID)
+  req.session["user_id"] = randomID;
   res.redirect("/urls")
 });
 
@@ -200,9 +204,9 @@ app.get("/login", (req, res) => {
 // Edit an exisiting URL that belong to logged-in user
 app.post("/urls/:id", (req, res) => {
   // Get URLs belonging to logged-in user
-  const userURLs = urlsForUser(req.cookies["user_id"]);
+  const userURLs = urlsForUser(req.session["user_id"]);
   if (userURLs[req.params.id]) {
-    urlDatabase[req.params.id] = { longURL: req.body.longURL, id: req.cookies["user_id"] };
+    urlDatabase[req.params.id] = { longURL: req.body.longURL, id: req.session["user_id"] };
     res.redirect("/urls")
   } else {
     res.send("This URL can only be edited by the owner");
@@ -212,7 +216,7 @@ app.post("/urls/:id", (req, res) => {
 // Delete an existing URL that belongs to logged-in user
 app.post("/urls/:shortURL/delete", (req, res) => {
   // Get URLs belonging to logged-in user
-  const userURLs = urlsForUser(req.cookies["user_id"]);
+  const userURLs = urlsForUser(req.session["user_id"]);
   if (userURLs[req.params.shortURL]) {
     delete urlDatabase[req.params.shortURL]
     res.redirect("/urls")
