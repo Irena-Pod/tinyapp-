@@ -37,17 +37,17 @@ const users = {
   "1": {
     id: "1",
     email: "jerry.seinfeld@gmail.com",
-    password: "the-pick"
+    password: bcrypt.hashSync("the-pick", saltRounds)
   },
   "2": {
     id: "2",
     email: "george.costanza@gmail.com",
-    password: "the-hamptons"
+    password: bcrypt.hashSync("the-hamptons", saltRounds)
   },
   "3": {
     id: "3",
     email: "kramer@gmail.com",
-    password: "coffee-table-book"
+    password: bcrypt.hashSync("coffee-table-book", saltRounds)
   }
 };
 //check if email already exists
@@ -72,13 +72,15 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  const hash = bcrypt.hashSync(req.body.password, saltRounds);
 
   if (!emailExists(req.body.email)) {
     return res.status(403).send(`${res.statusCode}: Email cannot be found.`);
   }
 
   for (let id in users) {
-    if (req.body.email === users[id].email && users[id].password === req.body.password) {
+    //check that user email exists in database and compare hashed passwords
+    if (req.body.email === users[id].email && bcrypt.compareSync(req.body.password, hash)) {
       res.cookie("user_id", users[id].id)
       res.redirect("/urls");
       return;
