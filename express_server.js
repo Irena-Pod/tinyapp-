@@ -14,9 +14,21 @@ function generateRandomString() {
   return Math.random().toString(36).substring(2, 8)
 }
 
+//filter URLs by user
+function urlsForUser (id) {
+  const filteredURLs = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].id === id) {
+      filteredURLs[url] = urlDatabase[url]
+    }
+  }
+  console.log( filteredURLs);
+}
+
 const urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", id: 1 },
-  "9sm5xK": { longURL: "http://www.google.com", id: 2 }
+  "9sm5xK": { longURL: "http://www.google.com", id: 2 },
+  "3f3452": { longURL: "http://facebook.com", id: 1 }
 };
 
 const users = {
