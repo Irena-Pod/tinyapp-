@@ -57,10 +57,33 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+
+
+
+
+
 app.post("/login", (req, res) => {
-  res.cookie("Username", req.body.Username);
-  res.redirect("/urls")
+
+  if (!emailExists(req.body.email)) {
+    return res.status(403).send(`${res.statusCode}: Email cannot be found.`);
+  }
+
+ 
+  for (let id in users) {
+    if (req.body.email === users[id].email && users[id].password === req.body.password) {
+      res.cookie("user_id", users[id].id)
+      res.redirect("/urls");
+      return;
+    }
+  }
+  return res.status(403).send(`${res.statusCode}: Incorrect password, try again!`);
 });
+
+
+
+
+
+
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");
