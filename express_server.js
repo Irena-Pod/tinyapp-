@@ -1,9 +1,12 @@
 const express = require("express");
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 const app = express();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const PORT = 8080; // default port 8080
+const { getUserbyEmail } = require('./helpers');
+const { generateRandomString } = require('./helpers');
+const { urlsForUser } = require('./helpers');
 
 app.use(cookieSession({
   name: 'session',
@@ -15,21 +18,6 @@ app.set("view engine", "ejs");
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-function generateRandomString() {
-  return Math.random().toString(36).substring(2, 8)
-}
-
-//filter URLs by user
-function urlsForUser(id) {
-  const filteredURLs = {};
-  for (let url in urlDatabase) {
-    if (urlDatabase[url].id === id) {
-      filteredURLs[url] = urlDatabase[url]
-    }
-  }
-  return filteredURLs;
-}
 
 const urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", id: "1" },
@@ -55,15 +43,6 @@ const users = {
   }
 };
 
-//lookup user by email 
-const getUserbyEmail = function (email, users) {
-  for (let user in users) {
-    if (users[user].email === email) {
-      return users[user];
-    }
-  }
-  return null;
-}
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -108,7 +87,7 @@ app.get("/urls", (req, res) => {
     }
   } else {
     templateVars = {
-      urls: urlsForUser(req.session["user_id"]),
+      urls: urlsForUser(req.session["user_id"], urlDatabase),
       user: users[req.session["user_id"]]
     }
   }
@@ -136,7 +115,7 @@ app.get("/urls/:shortURL", (req, res) => {
       shortURL: null
     }
   } else {
-    const userURLs = urlsForUser(req.session["user_id"]);
+    const userURLs = urlsForUser(req.session["user_id"], urlDatabase);
     if (userURLs[req.params.shortURL]) {
       templateVars = {
         shortURL: req.params.shortURL,
@@ -204,7 +183,7 @@ app.get("/login", (req, res) => {
 // Edit an exisiting URL that belong to logged-in user
 app.post("/urls/:id", (req, res) => {
   // Get URLs belonging to logged-in user
-  const userURLs = urlsForUser(req.session["user_id"]);
+  const userURLs = urlsForUser(req.session["user_id"], urlDatabase);
   if (userURLs[req.params.id]) {
     urlDatabase[req.params.id] = { longURL: req.body.longURL, id: req.session["user_id"] };
     res.redirect("/urls")
@@ -216,7 +195,7 @@ app.post("/urls/:id", (req, res) => {
 // Delete an existing URL that belongs to logged-in user
 app.post("/urls/:shortURL/delete", (req, res) => {
   // Get URLs belonging to logged-in user
-  const userURLs = urlsForUser(req.session["user_id"]);
+  const userURLs = urlsForUser(req.session["user_id"], urlDatabase);
   if (userURLs[req.params.shortURL]) {
     delete urlDatabase[req.params.shortURL]
     res.redirect("/urls")
