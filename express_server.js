@@ -11,7 +11,7 @@ const { urlsForUser } = require('./helpers');
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
-}))
+}));
 
 app.set("view engine", "ejs");
 
@@ -43,19 +43,22 @@ const users = {
   }
 };
 
-
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  if (req.session["user_id"]) {
+    res.redirect("/urls")
+  } else {
+    res.redirect("/login")
+  }
 });
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-// Login page: 
+// Login page
 app.post("/login", (req, res) => {
   const user = getUserbyEmail((req.body.email), users);
 
@@ -94,19 +97,19 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-//
+// Only logged-in users can create new URLs
 app.get("/urls/new", (req, res) => {
   if (!req.session["user_id"]) {
     res.redirect("/login")
     return;
   }
-
   const templateVars = {
     user: users[req.session["user_id"]]
   }
   res.render("urls_new", templateVars);
 });
 
+// Only logged-in users can update URLs
 app.get("/urls/:shortURL", (req, res) => {
   let templateVars = {}
   if (!req.session["user_id"]) {
@@ -132,10 +135,6 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomString()
   res.redirect(`/urls/${shortURL}`);
@@ -159,6 +158,7 @@ app.get("/register", (req, res) => {
   }
 });
 
+// Registration page
 app.post("/register", (req, res) => {
   const randomID = generateRandomString();
   if (req.body.email === "" || req.body.password === "") {
@@ -188,7 +188,7 @@ app.get("/login", (req, res) => {
     }
     res.render("login", templateVars)
   }
-})
+});
 
 // Edit an exisiting URL that belongs to logged-in user
 app.post("/urls/:id", (req, res) => {
