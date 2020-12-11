@@ -147,11 +147,16 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlObject.longURL);
 });
 
+// // If user is logged in, redirect to /urls, if not, retrun registration form
 app.get("/register", (req, res) => {
-  const templateVars = {
-    user: null
+  if (req.session["user_id"]) {
+    res.redirect("/urls")
+  } else {
+    const templateVars = {
+      user: null
+    }
+    res.render("register", templateVars)
   }
-  res.render("register", templateVars)
 });
 
 app.post("/register", (req, res) => {
