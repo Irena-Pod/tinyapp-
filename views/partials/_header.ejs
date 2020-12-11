@@ -1,27 +1,69 @@
-<header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-success">
-    <a class="navbar-brand" href="/urls">TinyApp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <a class="nav-item nav-link" href="/register">Register</a>
-        <a class="nav-item nav-link" href="/login">Login</a>
-      </div>
-      <div style="float:right">
+<nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">TinyApp</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
         <% if(user) { %>
-        <h>Logged in as: <%= user.email %></h5>
-          <form class="form-inline" method="POST" action="/logout">
-            <div class="col-auto">
-              <button type="submit" class="btn btn-outline-light">Logout</button>
-            </div>
+        <a class="nav-link" href="/urls">My URLS <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/urls/new">Create New URL</a>
+      </li>
+      <% } else { %>
+      <li class="nav-item">
+        <a class="nav-link" href="/register">Register</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/login"">Login</a>
+            </li>
+            <% } %>
+        </ul>
+          <% if(user) { %>
+          <form class=" form-inline" method="POST" action="/logout">
+          <div class="col-auto">
+            <h6 class="text-white bg-dark"> Logged in as: <%= user.email %></h>
+              <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+          </div>
           </form>
           <% } %>
-      </div>
-    </div>
-  </nav>
+  </div>
+</nav>
 </header>
+
+
+
+
+
+<!-- 
+
+
+    
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+       
+        <a class="nav-item nav-link" href=>My URLs</a>
+        <a class="nav-item nav-link" href="">Create New URL</a>
+       
+        <a class="nav-item nav-link" href="">Register</a>
+        <a class="nav-item nav-link" href=">Login</a>
+    
+      </div>
+
+
+     
+   
+          <div class="float-right">
+            <button type="submit" class="btn btn-outline-light">Logout</button>
+          </div>
+          </a>
+      </div>
+      </form>
+     
+    </div>
+    </div>
+  </nav> -->
