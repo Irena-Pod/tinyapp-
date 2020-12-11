@@ -193,7 +193,7 @@ app.post("/urls/:id", (req, res) => {
     urlDatabase[req.params.id] = { longURL: req.body.longURL, id: req.session["user_id"] };
     res.redirect("/urls")
   } else {
-    res.send("This URL can only be edited by the ownergit add ");
+    res.send("This URL can only be edited by the owner");
   }
 });
 
