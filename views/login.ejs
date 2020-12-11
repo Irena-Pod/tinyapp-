@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+  <style>
+    .spaced {
+      padding-top: 5px
+    }
+  </style>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -14,27 +19,51 @@
 
 <body>
   <%- include('partials/_header') %>
-  <h3>Login Page</h3>
-  <div class="text-center">
-    <form method="POST" action="/login">
-      <div class="col-7">
-        <div class="form-group">
-          <label for="exampleInputEmail1">Email address</label>
-          <input type="email" name="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
-        </div>
-      </div>
-      <div class="col-7">
-        <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" name="password" class="form-control" placeholder="Password">
-        </div>
-
-        <div class="text-center">
-          <button type="submit" class="btn btn-secondary ">Login</button>
-        </div>
-    </form>
+  <div class="row spaced">
+    <div class="col-6 col-md-4"></div>
+    <div class="col-6 col-md-4">
+      <h3>Login Page</h3>
+      <form method="POST" action="/login">
+    </div>
+    <div class="col-6 col-md-4"></div>
   </div>
-
+  <div class="row spaced">
+    <div class="col-6 col-md-4"></div>
+    <div class="col-6 col-md-4">
+      <label for="exampleInputEmail1">Email address</label>
+    </div>
+    <div class="col-6 col-md-4"></div>
+  </div>
+  <div class="row spaced">
+    <div class="col-6 col-md-4"></div>
+    <div class="col-6 col-md-4">
+      <input type="email" name="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="col-6 col-md-4"></div>
+  </div>
+  <div class="row spaced">
+    <div class="col-6 col-md-4"></div>
+    <div class="col-6 col-md-4">
+      <label for="exampleInputPassword1">Password</label>
+    </div>
+    <div class="col-6 col-md-4"></div>
+  </div>
+  <div class="row spaced">
+    <div class="col-6 col-md-4"></div>
+    <div class="col-6 col-md-4">
+      <input type="password" name="password" class="form-control" placeholder="Password">
+    </div>
+    <div class="col-6 col-md-4"></div>
+  </div>
+  <div class="row spaced">
+    <div class="col-6 col-md-4"></div>
+    <div class="col-6 col-md-4">
+      <button type="submit" class="btn btn-secondary ">Login</button>
+    </div>
+    <div class="col-6 col-md-4"></div>
+  </div>
+  </form>
+  </div>
 </body>
 
 <!-- Bootstrap JS -->
