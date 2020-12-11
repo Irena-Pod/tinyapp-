@@ -63,7 +63,7 @@ app.post("/login", (req, res) => {
     return res.status(403).send(`${res.statusCode}: Email cannot be found.`);
   }
 
-// compare passwords
+  // compare passwords
   if (bcrypt.compareSync(req.body.password, user.password)) {
     req.session["user_id"] = user.id
     res.redirect("/urls");
@@ -173,14 +173,19 @@ app.post("/register", (req, res) => {
   res.redirect("/urls")
 });
 
+// If user is logged in, redirect to /urls, if not, retrun login form
 app.get("/login", (req, res) => {
-  const templateVars = {
-    user: null
+  if (req.session["user_id"]) {
+    res.redirect("/urls")
+  } else {
+    const templateVars = {
+      user: null
+    }
+    res.render("login", templateVars)
   }
-  res.render("login", templateVars)
 })
 
-// Edit an exisiting URL that belong to logged-in user
+// Edit an exisiting URL that belongs to logged-in user
 app.post("/urls/:id", (req, res) => {
   // Get URLs belonging to logged-in user
   const userURLs = urlsForUser(req.session["user_id"], urlDatabase);
@@ -188,7 +193,7 @@ app.post("/urls/:id", (req, res) => {
     urlDatabase[req.params.id] = { longURL: req.body.longURL, id: req.session["user_id"] };
     res.redirect("/urls")
   } else {
-    res.send("This URL can only be edited by the owner");
+    res.send("This URL can only be edited by the ownergit add ");
   }
 });
 
