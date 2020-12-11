@@ -4,8 +4,10 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Screenshot of URLs Page: Logged-in User"](https://github.com/Irena-Pod/tinyapp-/blob/master/docs/Main_Page_Logged-in_User.png?raw=true)
+!["Screenshot of URLs Page: Non Logged-in User"](https://github.com/Irena-Pod/tinyapp-/blob/master/docs/Main_Page_Non-Logged-in_User.png?raw=true)
+!["Screenshot of Create New URL Page"](https://github.com/Irena-Pod/tinyapp-/blob/master/docs/Create_TinyURL.png?raw=true)
+!["Screenshot of Edit Page"](https://github.com/Irena-Pod/tinyapp-/blob/master/docs/Edit%20TinyURL%20Page.png?raw=true)
 
 ## Dependencies
 
