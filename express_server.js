@@ -4,9 +4,7 @@ const app = express();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const PORT = 8080; // default port 8080
-const { getUserbyEmail } = require('./helpers');
-const { generateRandomString } = require('./helpers');
-const { urlsForUser } = require('./helpers');
+const { getUserbyEmail, generateRandomString, urlsForUser } = require('./helpers');
 
 app.use(cookieSession({
   name: 'session',
